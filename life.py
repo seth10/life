@@ -8,8 +8,11 @@ def print2D(world):
             pad.addch(i, j, "O" if element else " ")
     pad.refresh(0,0, 0,0, len(world), len(world[0]))
 
+def make2DList(rows, columns, generator = lambda: False):
+    return [[generator() for _ in range(rows)] for _ in range(columns)]
+
 def iterate(today):
-    tomorrow = [[False for _ in range(len(today[0]))] for _ in range(len(today))]
+    tomorrow = make2DList(len(today), len(today[0]))
     for i,row in enumerate(tomorrow):
         for j,col in enumerate(row):
             livingNeighbors = 0
@@ -20,14 +23,16 @@ def iterate(today):
     return tomorrow
 
 if __name__ == "__main__":
+    SIZE = 10
+    ITERATIONS = 20
+    DELAY = 0.5
     try:
-        SIZE = 10
         stdscr = curses.initscr()
         pad = curses.newpad(SIZE, SIZE+1)
-        world = [[random.random() < 0.5 for _ in range(SIZE)] for _ in range(SIZE)]
-        for _ in range(10):
+        world = make2DList(SIZE, SIZE, lambda: random.random() < 0.5)
+        for _ in range(ITERATIONS):
             world = iterate(world)
             print2D(world)
-            time.sleep(0.5)
+            time.sleep(DELAY)
     finally:
         curses.endwin()
