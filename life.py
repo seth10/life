@@ -20,8 +20,8 @@ def iterate(today):
 
 if __name__ == "__main__":
     SIZE = 7
-    DELAY = 0.2
-    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
+    DELAY = 0.01
+    MAX_ITERATIONS = 2*int(1/DELAY) # let the simulation run up to 2 seconds
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
@@ -33,10 +33,14 @@ if __name__ == "__main__":
             time.sleep(DELAY)
             if len(history) >= 3 and history[-1] == history[-3]: # TODO: search for longer stable patterns
                 break
-        curses.endwin()
         if len(history) < MAX_ITERATIONS:
-            print "Stable after {} iterations".format(len(history))
+            resultMessage = "Stable after {} iterations".format(len(history))
         else:
-            print "Did not stabilize after {} iterations".format(MAX_ITERATIONS)
-    finally: # if there were any exceptions, be sure to stop curses so the prompt returns
+            resultMessage = "Did not stabilize after {} iterations".format(MAX_ITERATIONS)
+        pad.resize(SIZE+1, len(resultMessage)+1)
+        pad.addstr(SIZE, 0, resultMessage)
+        pad.refresh(SIZE,0, SIZE,0, SIZE,len(resultMessage))
+        curses.flushinp() # discard any input received while simulation was running
+        pad.getch() # wait for any keypress
+    finally: # even if there were any exceptions, be sure curses stops so the prompt returns
         curses.endwin()
