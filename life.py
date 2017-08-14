@@ -14,11 +14,7 @@ def iterate(today):
     tomorrow = make2DList(len(today), len(today[0]))
     for i,row in enumerate(tomorrow):
         for j,col in enumerate(row):
-            livingNeighbors = 0 # TODO: use reduce
-            for n,m in [(x,y) for x in [-1,0,1] for y in [-1,0,1]]:
-                if (n,m) != (0,0): # don't count self
-                    if today[(i+n)%len(today)][(j+m)%len(today)]: livingNeighbors += 1
-            tomorrow[i][j] = 2 <= livingNeighbors <= 3
+            tomorrow[i][j] = 2 <= sum([(x,y) != (0,0) and today[(i+x)%len(today)][(j+y)%len(today)] for x in [-1,0,1] for y in [-1,0,1]]) <= 3
     return tomorrow
 
 if __name__ == "__main__":
