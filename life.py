@@ -4,7 +4,7 @@ import curses, locale
 def print2D(world):
     for i, row in enumerate(world):
         for j, element in enumerate(row):
-            pad.addstr(i, j, unichr(0x2588).encode('utf-8') if element else " ")
+            pad.addstr(i, j, u'\u25CB'.encode('utf-8') if element else " ")
     pad.refresh(0,0, 0,0, len(world), len(world[0]))
 
 def make2DList(rows, columns, generator = lambda: False):
