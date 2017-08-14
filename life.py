@@ -20,8 +20,8 @@ def iterate(today):
 
 if __name__ == "__main__":
     SIZE = 7
-    MAX_ITERATIONS = 100000
     DELAY = 0.2
+    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
@@ -32,11 +32,11 @@ if __name__ == "__main__":
             print2D(history[-1])
             time.sleep(DELAY)
             if len(history) >= 3 and history[-1] == history[-3]: # TODO: search for longer stable patterns
-                pad.addstr(0,0, "Stable")
-                pad.refresh(0,0, 0,0, 1,6)
-                time.sleep(1)
-                curses.endwin()
-                print "Stable after {} iterations".format(len(history))
                 break
-    finally:
+        curses.endwin()
+        if len(history) < MAX_ITERATIONS:
+            print "Stable after {} iterations".format(len(history))
+        else:
+            print "Did not stabilize after {} iterations".format(MAX_ITERATIONS)
+    finally: # if there were any exceptions, be sure to stop curses so the prompt returns
         curses.endwin()
