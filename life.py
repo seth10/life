@@ -1,11 +1,10 @@
-import random
-import curses
-import time
+import time, random
+import curses, locale
 
 def print2D(world):
     for i, row in enumerate(world):
         for j, element in enumerate(row):
-            pad.addch(i, j, "O" if element else " ")
+            pad.addstr(i, j, unichr(0x2588).encode('utf-8') if element else " ")
     pad.refresh(0,0, 0,0, len(world), len(world[0]))
 
 def make2DList(rows, columns, generator = lambda: False):
@@ -27,6 +26,7 @@ if __name__ == "__main__":
     ITERATIONS = 20
     DELAY = 0.5
     try:
+        locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
         pad = curses.newpad(SIZE, SIZE+1)
         world = make2DList(SIZE, SIZE, lambda: random.random() < 0.5)
