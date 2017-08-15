@@ -36,9 +36,9 @@ def simulate(size, delay, maxIterations):
     if len(history) < maxIterations:
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
-        return "Stable after {} iterations with a cycle of length {}".format(iterationCount-cycleLength, cycleLength)
+        return "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
     else:
-        return "Did not stabilize after {} iterations".format(maxIterations)
+        return "Did not stabilize after {} iterations.".format(maxIterations)
 
 
 if __name__ == "__main__":
@@ -48,11 +48,13 @@ if __name__ == "__main__":
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
+        curses.curs_set(0) # hide curosr
         ch = ord('\n') # pretend Enter was just pressed to run the simulation at least once
-        while ch == ord('\n'): # run another simulation if Enter was pressed
+        while ch == ord('\n'):
             stdscr.clear()
             result = simulate(SIZE, DELAY, MAX_ITERATIONS)
             stdscr.addstr(SIZE, 0, result)
+            stdscr.addstr(SIZE+1, 0, "Press Enter to run another simulation, or any other key to quit...")
             curses.flushinp() # discard any input received while simulation was running
             ch = stdscr.getch() # wait for any keypress
     finally: # even if there were any exceptions, be sure curses stops so the prompt returns
