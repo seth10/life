@@ -14,7 +14,7 @@ def iterate(today):
     tomorrow = make2DList(len(today), len(today[0]))
     for i, row in enumerate(tomorrow):
         for j, element in enumerate(row):
-            neighbors = sum([ (x,y) != (0,0) and today[(i+x)%len(today)][(j+y)%len(row)] for x in [-1,0,1] for y in [-1,0,1] ])
+            neighbors = sum([ today[(i+x)%len(today)][(j+y)%len(row)] for x in [-1,0,1] for y in [-1,0,1] if (x,y) != (0,0) ])
             tomorrow[i][j] = (2 <= neighbors <= 3) if today[i][j] else (neighbors == 3)
             # The Rules
             # * For a space that is 'populated':
