@@ -19,9 +19,9 @@ def iterate(today):
     return tomorrow
 
 if __name__ == "__main__":
-    SIZE = 7
-    DELAY = 0.1
-    MAX_ITERATIONS = 2*int(1/DELAY) # let the simulation run up to 2 seconds
+    SIZE = 8
+    DELAY = 0.01
+    MAX_ITERATIONS = 5*int(1/DELAY) # let the simulation run up to 5 seconds
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
@@ -30,7 +30,7 @@ if __name__ == "__main__":
             history.append(iterate(history[-1]))
             print2D(history[-1])
             time.sleep(DELAY)
-            if len(history) >= 3 and history[-1] == history[-3]: # TODO: search for longer stable patterns
+            if history[-1] in history[:-1]:
                 break
         if len(history) < MAX_ITERATIONS:
             stdscr.addstr(SIZE, 0, "Stable after {} iterations".format(len(history)))
