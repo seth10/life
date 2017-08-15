@@ -25,6 +25,22 @@ def iterate(today):
             #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
+def simulate(size, delay, maxIterations):
+    history = [make2DList(size, size, lambda: random.random() < 0.5)]
+    while len(history) < maxIterations:
+        print2D(history[-1])
+        time.sleep(delay)
+        history.append(iterate(history[-1]))
+        if history[-1] in history[:-1]:
+            break
+    if len(history) < maxIterations:
+        iterationCount = len(history) - 1
+        cycleLength = iterationCount - history[:-1].index(history[-1])
+        return "Stable after {} iterations with a cycle of length {}".format(iterationCount-cycleLength, cycleLength)
+    else:
+        return "Did not stabilize after {} iterations".format(maxIterations)
+
+
 if __name__ == "__main__":
     SIZE = 8
     DELAY = 0.1
@@ -32,20 +48,12 @@ if __name__ == "__main__":
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
-        history = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
-        while len(history) < MAX_ITERATIONS:
-            print2D(history[-1])
-            time.sleep(DELAY)
-            history.append(iterate(history[-1]))
-            if history[-1] in history[:-1]:
-                break
-        if len(history) < MAX_ITERATIONS:
-            iterationCount = len(history)-1
-            cycleLength = iterationCount - history[:-1].index(history[-1])
-            stdscr.addstr(SIZE, 0, "Stable after {} iterations with a cycle of length {}".format(iterationCount-cycleLength, cycleLength))
-        else:
-            stdscr.addstr(SIZE, 0, "Did not stabilize after {} iterations".format(MAX_ITERATIONS))
-        curses.flushinp() # discard any input received while simulation was running
-        stdscr.getch() # wait for any keypress
+        ch = ord('\n') # pretend Enter was just pressed to run the simulation at least once
+        while ch == ord('\n'): # run another simulation if Enter was pressed
+            stdscr.clear()
+            result = simulate(SIZE, DELAY, MAX_ITERATIONS)
+            stdscr.addstr(SIZE, 0, result)
+            curses.flushinp() # discard any input received while simulation was running
+            ch = stdscr.getch() # wait for any keypress
     finally: # even if there were any exceptions, be sure curses stops so the prompt returns
         curses.endwin()
