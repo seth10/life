@@ -33,7 +33,9 @@ if __name__ == "__main__":
             if history[-1] in history[:-1]:
                 break
         if len(history) < MAX_ITERATIONS:
-            stdscr.addstr(SIZE, 0, "Stable after {} iterations with a cycle of length {}".format( len(history), len(history) - history[:-1].index(history[-1]) - 1 ))
+            iterationCount = len(history)-1
+            cycleLength = iterationCount - history[:-1].index(history[-1])
+            stdscr.addstr(SIZE, 0, "Stable after {} iterations with a cycle of length {}".format(iterationCount-cycleLength, cycleLength))
         else:
             stdscr.addstr(SIZE, 0, "Did not stabilize after {} iterations".format(MAX_ITERATIONS))
         curses.flushinp() # discard any input received while simulation was running
