@@ -19,9 +19,9 @@ def iterate(today):
     return tomorrow
 
 if __name__ == "__main__":
-    SIZE = 8
-    DELAY = 0.01
-    MAX_ITERATIONS = 5*int(1/DELAY) # let the simulation run up to 5 seconds
+    SIZE = 5
+    DELAY = 0.5
+    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
@@ -33,7 +33,7 @@ if __name__ == "__main__":
             if history[-1] in history[:-1]:
                 break
         if len(history) < MAX_ITERATIONS:
-            stdscr.addstr(SIZE, 0, "Stable after {} iterations".format(len(history)))
+            stdscr.addstr(SIZE, 0, "Stable after {} iterations with a cycle of length {}".format( len(history), len(history) - history[:-1].index(history[-1]) - 1 ))
         else:
             stdscr.addstr(SIZE, 0, "Did not stabilize after {} iterations".format(MAX_ITERATIONS))
         curses.flushinp() # discard any input received while simulation was running
