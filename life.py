@@ -15,17 +15,29 @@ def iterate(today):
     for i, row in enumerate(tomorrow):
         for j, element in enumerate(row):
             neighbors = sum([ (x,y) != (0,0) and today[(i+x)%len(today)][(j+y)%len(row)] for x in [-1,0,1] for y in [-1,0,1] ])
-            tomorrow[i][j] = (2 <= neighbors <= 3)
+            if today[i][j]:
+                tomorrow[i][j] = (2 <= neighbors <= 3)
+            else:
+                tomorrow[i][j] = (neighbors == 3)
+            # The Rules
+            # * For a space that is 'populated':
+            #   - Each cell with one or no neighbors dies, as if by solitude.
+            #   - Each cell with four or more neighbors dies, as if by overpopulation.
+            #   - Each cell with two or three neighbors survives.
+            # * For a space that is 'empty' or 'unpopulated'
+            #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
 if __name__ == "__main__":
     SIZE = 5
-    DELAY = 0.5
-    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
+    DELAY = 1
+    MAX_ITERATIONS = 30*int(1/DELAY) # let the simulation run up to 30 seconds
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
         history = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
+        print2D(history[0])
+        time.sleep(DELAY)
         while len(history) < MAX_ITERATIONS:
             history.append(iterate(history[-1]))
             print2D(history[-1])
