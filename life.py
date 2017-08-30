@@ -27,8 +27,10 @@ def simulate(size, startPercent):
     return any(sum(history[-1], [])) # False: eradication, True: stable
 
 if __name__ == "__main__":
-    TRIALS = 100
+    TRIALS = 100000
     for SIZE in range(5, 10):
-        for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
+        #for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
+            START_PERCENT = 0.9
+            # TODO: parallelize
             results = [simulate(SIZE, START_PERCENT) for _ in range(TRIALS)]
             print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)*100.0/len(results))
