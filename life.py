@@ -4,7 +4,7 @@ import curses, locale
 def print2D(world):
     for i, row in enumerate(world):
         for j, element in enumerate(row):
-            stdscr.addstr(i, j, u'\u25CB'.encode('utf-8') if element else " ")
+            stdscr.addstr(i, j, u'\u258C'.encode('utf-8') if element else " ")
     stdscr.refresh()
 
 def make2DList(rows, columns, generator = lambda: False):
@@ -36,7 +36,10 @@ def simulate(size, delay, maxIterations):
     if len(history) < maxIterations:
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
-        return "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
+        if cycleLength == 1 and not any(sum(history[-1], [])):
+            return "Eradication after {} iterations.".format(iterationCount-cycleLength)
+        else:
+            return "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
     else:
         return "Did not stabilize after {} iterations.".format(maxIterations)
 
