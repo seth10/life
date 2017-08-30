@@ -1,4 +1,4 @@
-import random, multiprocessing, functools
+import time, random, multiprocessing, functools
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -27,10 +27,13 @@ def simulate(size, startPercent, *args):
     return any(sum(history[-1], [])) # False: eradication, True: stable
 
 if __name__ == "__main__":
+    start_time = time.time()
     TRIALS = 100000
-    for SIZE in range(5, 10):
+    for SIZE in range(5, 6):
         #for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
             START_PERCENT = 0.9
-            pool = multiprocessing.Pool(processes=4)
-            results = pool.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)*100.0/len(results))
+            pool = multiprocessing.Pool()
+            #pool = multiprocessing.Pool(processes=16)
+            results = pool.map(functools.partial(simulate, SIZE, START_PERCENT), xrange(TRIALS))
+            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)*100.0/TRIALS)
+    print "Took {:.2f} seconds.".format(time.time() - start_time)
