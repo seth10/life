@@ -1,4 +1,6 @@
-import time, random, multiprocessing, functools
+import time, random
+import multiprocessing, functools
+import matplotlib.pyplot as plot
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -29,9 +31,19 @@ def simulate(size, startPercent, *args):
 if __name__ == "__main__":
     startTime = time.time()
     POOL = multiprocessing.Pool()
-    TRIALS = 100
+    TRIALS = 10000
+    data = []
     for SIZE in range(5, 10):
-        for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
+        #for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
+            START_PERCENT = 0.9
             results = POOL.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)*100.0/len(results))
+            data.append(sum(results)/float(TRIALS))
+            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, data[-1]*100)
     print "Took {:.2f} seconds.".format(time.time() - startTime)
+    plot.bar(range(len(data)), data)
+    plot.xlabel('Grid size')
+    plot.ylabel('Fraction of simulations stabilized')
+    plot.title('Stabilization (not eradication) at 90% initial population')
+    plot.xticks(range(len(data)))
+    plot.gca().set_xticklabels(['{0}x{0}'.format(i) for i in range(5, 10)])
+    plot.show()
