@@ -1,4 +1,4 @@
-import time, random
+import random
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -18,27 +18,19 @@ def iterate(today):
             #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
-def simulate(size, delay, maxIterations):
-    history = [make2DList(size, size, lambda: random.random() < 0.5)]
-    while len(history) < maxIterations:
+def simulate(size, startPercent):
+    history = [make2DList(size, size, lambda: random.random() < startPercent)]
+    while history[-1] not in history[:-1]:
         history.append(iterate(history[-1]))
-        if history[-1] in history[:-1]:
-            break
-    if len(history) < maxIterations:
-        iterationCount = len(history) - 1
-        cycleLength = iterationCount - history[:-1].index(history[-1])
-        if cycleLength == 1 and not any(sum(history[-1], [])):
-            return "Eradication after {} iterations.".format(iterationCount-cycleLength)
-        else:
-            return "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
-    else:
-        return "Did not stabilize after {} iterations.".format(maxIterations)
-
+    iterationCount = len(history) - 1
+    cycleLength = iterationCount - history[:-1].index(history[-1])
+    endState = "stable" if any(sum(history[-1], [])) else "eradication"
+    return "{:4d}: {}".format(iterationCount-cycleLength, endState)
 
 if __name__ == "__main__":
     SIZE = 8
-    DELAY = 0.1
-    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
+    START_PERCENT = 0.5
+    print "{0:}x{0:} grid with {1:.0f}% initially alive".format(SIZE, START_PERCENT*100)
     for _ in range(10):
-        result = simulate(SIZE, DELAY, MAX_ITERATIONS)
+        result = simulate(SIZE, START_PERCENT)
         print result
