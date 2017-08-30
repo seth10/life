@@ -1,4 +1,3 @@
-import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -11,29 +10,21 @@ data = [
     [0, 36, 61, 64, 65, 62, 53, 26, 0, 1, 0]
 ]
 
-result = np.array(data, dtype=np.int)
-
 fig = plt.figure(figsize=(6,5), dpi=150)
 ax = fig.add_subplot(111, projection='3d')
 
-xpos = np.arange(len(data[0]))
-ypos = np.arange(len(data))
-
-xposM, yposM = np.meshgrid(xpos, ypos, copy=False)
-zpos = result.ravel()
-
-x = xposM.ravel()
-y = yposM.ravel()
-z = zpos*0
+x = range(len(data[0])) * len(data)
+y = sum([[i]*len(data[0]) for i in range(len(data))], [])
+z = [0] * len(data[0]) * len(data)
 
 dx = 0.5
 dy = 0.5
-dz = zpos
+dz = sum(data, [])
 
-ax.w_xaxis.set_ticks(xpos + dx/2)
+ax.w_xaxis.set_ticks([i+dx/2 for i in range(len(data[0]))])
 ax.w_xaxis.set_ticklabels(['0','10','20','30','40','50','60','70','80','90','100'])
 
-ax.w_yaxis.set_ticks(ypos + dy/2)
+ax.w_yaxis.set_ticks([i+dy/2 for i in range(len(data))])
 ax.w_yaxis.set_ticklabels(['5x5', '6x6', '7x7', '8x8', '9x9'])
 
 ax.set_title('Initial cell population and grid size vs stabilization/eradication')
@@ -41,7 +32,6 @@ ax.set_xlabel('Percentage of cells initially alive')
 ax.set_ylabel('Grid size')
 ax.set_zlabel('Percentage of simulations stabilized')
 
-values = np.linspace(0.2, 1, x.shape[0])
-colors = cm.rainbow(values)
+colors = cm.rainbow( [0.2 + (1-0.2)/(len(x)-1)*i for i in range(len(x))] )
 ax.bar3d(x, y, z, dx, dy, dz, colors)
 plt.show()
