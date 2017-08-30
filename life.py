@@ -24,13 +24,11 @@ def simulate(size, startPercent):
         history.append(iterate(history[-1]))
     iterationCount = len(history) - 1
     cycleLength = iterationCount - history[:-1].index(history[-1])
-    endState = "stable" if any(sum(history[-1], [])) else "eradication"
-    return "{:4d}: {}".format(iterationCount-cycleLength, endState)
+    return any(sum(history[-1], [])) # False: eradication, True: stable
 
 if __name__ == "__main__":
-    SIZE = 8
-    START_PERCENT = 0.5
-    print "{0:}x{0:} grid with {1:.0f}% initially alive".format(SIZE, START_PERCENT*100)
-    for _ in range(10):
-        result = simulate(SIZE, START_PERCENT)
-        print result
+    TRIALS = 100
+    for SIZE in range(5, 10):
+        for START_PERCENT in map(lambda n: n/10.0, range(11)):
+            results = [simulate(SIZE, START_PERCENT) for _ in range(TRIALS)]
+            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)*100.0/len(results))
