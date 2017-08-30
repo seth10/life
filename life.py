@@ -1,11 +1,4 @@
 import time, random
-import curses, locale
-
-def print2D(world):
-    for i, row in enumerate(world):
-        for j, element in enumerate(row):
-            stdscr.addstr(i, j, u'\u258C'.encode('utf-8') if element else " ")
-    stdscr.refresh()
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -28,8 +21,6 @@ def iterate(today):
 def simulate(size, delay, maxIterations):
     history = [make2DList(size, size, lambda: random.random() < 0.5)]
     while len(history) < maxIterations:
-        print2D(history[-1])
-        time.sleep(delay)
         history.append(iterate(history[-1]))
         if history[-1] in history[:-1]:
             break
@@ -48,17 +39,6 @@ if __name__ == "__main__":
     SIZE = 8
     DELAY = 0.1
     MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
-    try:
-        locale.setlocale(locale.LC_ALL, '')
-        stdscr = curses.initscr()
-        curses.curs_set(0) # hide curosr
-        ch = ord('\n') # pretend Enter was just pressed to run the simulation at least once
-        while ch == ord('\n'):
-            stdscr.clear()
-            result = simulate(SIZE, DELAY, MAX_ITERATIONS)
-            stdscr.addstr(SIZE, 0, result)
-            stdscr.addstr(SIZE+1, 0, "Press Enter to run another simulation, or any other key to quit...")
-            curses.flushinp() # discard any input received while simulation was running
-            ch = stdscr.getch() # wait for any keypress
-    finally: # even if there were any exceptions, be sure curses stops so the prompt returns
-        curses.endwin()
+    for _ in range(10):
+        result = simulate(SIZE, DELAY, MAX_ITERATIONS)
+        print result
