@@ -1,11 +1,13 @@
 import time, random
-import curses, locale
+from Tkinter import Tk, Canvas
 
 def print2D(world):
+    for item in canvas.find_all():
+        canvas.delete(item)
     for i, row in enumerate(world):
         for j, element in enumerate(row):
-            stdscr.addstr(i, j, u'\u258C'.encode('utf-8') if element else " ")
-    stdscr.refresh()
+            if element:
+               canvas.create_rectangle(i*BLOCK_SIZE, j*BLOCK_SIZE, (i+1)*BLOCK_SIZE, (j+1)*BLOCK_SIZE, fill="black", width=0)
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -25,40 +27,28 @@ def iterate(today):
             #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
-def simulate(size, delay, maxIterations):
-    history = [make2DList(size, size, lambda: random.random() < 0.5)]
-    while len(history) < maxIterations:
-        print2D(history[-1])
-        time.sleep(delay)
-        history.append(iterate(history[-1]))
-        if history[-1] in history[:-1]:
-            break
-    if len(history) < maxIterations:
+def simulate():
+    print2D(history[-1])
+    history.append(iterate(history[-1]))
+    if history[-1] not in history[:-1]:
+        root.after(int(DELAY*1000), simulate)
+    else:
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
         if cycleLength == 1 and not any(sum(history[-1], [])):
-            return "Eradication after {} iterations.".format(iterationCount-cycleLength)
+            print "Eradication after {} iterations.".format(iterationCount-cycleLength)
         else:
-            return "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
-    else:
-        return "Did not stabilize after {} iterations.".format(maxIterations)
+            print "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
+        root.destroy()
 
 
 if __name__ == "__main__":
     SIZE = 8
     DELAY = 0.1
-    MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
-    try:
-        locale.setlocale(locale.LC_ALL, '')
-        stdscr = curses.initscr()
-        curses.curs_set(0) # hide curosr
-        ch = ord('\n') # pretend Enter was just pressed to run the simulation at least once
-        while ch == ord('\n'):
-            stdscr.clear()
-            result = simulate(SIZE, DELAY, MAX_ITERATIONS)
-            stdscr.addstr(SIZE, 0, result)
-            stdscr.addstr(SIZE+1, 0, "Press Enter to run another simulation, or any other key to quit...")
-            curses.flushinp() # discard any input received while simulation was running
-            ch = stdscr.getch() # wait for any keypress
-    finally: # even if there were any exceptions, be sure curses stops so the prompt returns
-        curses.endwin()
+    BLOCK_SIZE = 20 # size of each block on the canvas
+    history = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
+    root = Tk()
+    canvas = Canvas(root, width=SIZE*BLOCK_SIZE, height=SIZE*BLOCK_SIZE, bg="white")
+    canvas.pack()
+    root.after(10, simulate)
+    root.mainloop()
