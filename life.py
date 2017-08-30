@@ -1,6 +1,9 @@
+from __future__ import division
 import time, random
 import multiprocessing, functools
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -31,19 +34,42 @@ def simulate(size, startPercent, *args):
 if __name__ == "__main__":
     startTime = time.time()
     POOL = multiprocessing.Pool()
-    TRIALS = 10000
+    TRIALS = 100
+    GRID_SIZES = range(5, 10)
+    POPULATION_PERCENTAGES = map(lambda n: n/10, range(0,11))
     data = []
-    for SIZE in range(5, 10):
-        #for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
-            START_PERCENT = 0.9
+    for SIZE in GRID_SIZES:
+        data.append([])
+        for START_PERCENT in POPULATION_PERCENTAGES:
             results = POOL.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
-            data.append(sum(results)/float(TRIALS))
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, data[-1]*100)
+            data[-1].append(sum(results)/TRIALS)
+            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, data[-1][-1]*100)
+
     print "Took {:.2f} seconds.".format(time.time() - startTime)
-    plot.bar(range(len(data)), data)
-    plot.xlabel('Grid size')
-    plot.ylabel('Fraction of simulations stabilized')
-    plot.title('Stabilization (not eradication) at 90% initial population')
-    plot.xticks(range(len(data)))
-    plot.gca().set_xticklabels(['{0}x{0}'.format(i) for i in range(5, 10)])
-    plot.show()
+
+    fig = plt.figure(figsize=(8,5))
+    ax = fig.gca(projection='3d')
+
+    x = range(len(data[0])) * len(data)
+    y = sum([[i]*len(data[0]) for i in range(len(data))], [])
+    z = [0] * len(data[0]) * len(data)
+
+    dx = 0.5
+    dy = 0.5
+    dz = sum(data, [])
+
+    ax.w_xaxis.set_ticks([i+dx/2 for i in range(len(data[0]))])
+    ax.w_xaxis.set_ticklabels(POPULATION_PERCENTAGES)
+
+    ax.w_yaxis.set_ticks([i+dy/2 for i in range(len(data))])
+    ax.w_yaxis.set_ticklabels(['{0}x{0}'.format(i) for i in GRID_SIZES])
+
+    ax.set_title('Initial cell population and grid size vs stabilization/eradication')
+    ax.set_xlabel('Fraction of cells initially alive')
+    ax.set_ylabel('Grid size')
+    ax.set_zlabel('Fraction of simulations stabilized')
+
+    colors = cm.rainbow( [0.2 + (1-0.2)/(len(x)-1)*i for i in range(len(x))] )
+    ax.bar3d(x, y, z, dx, dy, dz, colors)
+    plt.tight_layout()
+    plt.show()
