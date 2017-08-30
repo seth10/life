@@ -1,5 +1,6 @@
 import time, random
 from Tkinter import Tk, Canvas
+import tkMessageBox
 
 import functools
 # needed so the partial function has a __name__ when root.after calls it
@@ -16,6 +17,9 @@ def print2D(world):
         for j, element in enumerate(row):
             if element:
                canvas.create_rectangle(i*BLOCK_SIZE, j*BLOCK_SIZE, (i+1)*BLOCK_SIZE, (j+1)*BLOCK_SIZE, fill="black", width=0)
+
+def statusLine(text):
+    canvas.create_text(2, SIZE*BLOCK_SIZE, anchor="nw", text=text)
 
 def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
@@ -37,6 +41,7 @@ def iterate(today):
 
 def simulate(history, delay=0.1):
     print2D(history[-1])
+    statusLine("Generation {}".format(len(history)-1))
     history.append(iterate(history[-1]))
     if history[-1] not in history[:-1]:
         root.after(int(delay*1000), partial(simulate, history, delay))
@@ -44,9 +49,10 @@ def simulate(history, delay=0.1):
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
         if cycleLength == 1 and not any(sum(history[-1], [])):
-            print "Eradication after {} iterations.".format(iterationCount-cycleLength)
+            result = "Eradication after {} generations.".format(iterationCount-cycleLength)
         else:
-            print "Stable after {} iterations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
+            result = "Stable after {} generations with a cycle of length {}.".format(iterationCount-cycleLength, cycleLength)
+        tkMessageBox.showinfo("Simulation complete", result)
         root.destroy()
 
 
@@ -56,7 +62,7 @@ if __name__ == "__main__":
     BLOCK_SIZE = 20 # size of each block on the canvas
     HISTORY = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
     root = Tk()
-    canvas = Canvas(root, width=SIZE*BLOCK_SIZE, height=SIZE*BLOCK_SIZE, bg="white")
+    canvas = Canvas(root, width=SIZE*BLOCK_SIZE, height=SIZE*BLOCK_SIZE+12, bg="white")
     canvas.pack()
     root.after(10, partial(simulate, HISTORY, DELAY))
     root.mainloop()
