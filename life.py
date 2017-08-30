@@ -1,6 +1,14 @@
 import time, random
 from Tkinter import Tk, Canvas
 
+import functools
+# needed so the partial function has a __name__ when root.after calls it
+# thanks to louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+def partial(func, *args, **kwargs):
+    partial_func = functools.partial(func, *args, **kwargs)
+    functools.update_wrapper(partial_func, func)
+    return partial_func
+
 def print2D(world):
     for item in canvas.find_all():
         canvas.delete(item)
@@ -27,11 +35,11 @@ def iterate(today):
             #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
-def simulate():
+def simulate(history, delay=0.1):
     print2D(history[-1])
     history.append(iterate(history[-1]))
     if history[-1] not in history[:-1]:
-        root.after(int(DELAY*1000), simulate)
+        root.after(int(delay*1000), partial(simulate, history, delay))
     else:
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
@@ -46,9 +54,9 @@ if __name__ == "__main__":
     SIZE = 8
     DELAY = 0.1
     BLOCK_SIZE = 20 # size of each block on the canvas
-    history = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
+    HISTORY = [make2DList(SIZE, SIZE, lambda: random.random() < 0.5)]
     root = Tk()
     canvas = Canvas(root, width=SIZE*BLOCK_SIZE, height=SIZE*BLOCK_SIZE, bg="white")
     canvas.pack()
-    root.after(10, simulate)
+    root.after(10, partial(simulate, HISTORY, DELAY))
     root.mainloop()
