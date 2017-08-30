@@ -1,6 +1,7 @@
 from __future__ import division
 import time, random
 import multiprocessing, functools
+import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
@@ -68,6 +69,9 @@ if __name__ == "__main__":
     ax.set_xlabel('Fraction of cells initially alive')
     ax.set_ylabel('Grid size')
     ax.set_zlabel('Fraction of simulations stabilized')
+
+    # stretch axis, thanks to stackoverflow.com/q/30223161
+    ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, len(data)/len(data[0]), 1, 1]))
 
     colors = cm.rainbow( [0.2 + (1-0.2)/(len(x)-1)*i for i in range(len(x))] )
     ax.bar3d(x, y, z, dx, dy, dz, colors)
