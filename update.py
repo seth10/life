@@ -1,17 +1,18 @@
+import matplotlib
+matplotlib.use('TKAgg')
 import matplotlib.pyplot as plt
-import numpy as np
+import random
 
-x = np.linspace(0, 6*np.pi, 100)
-y = np.sin(x)
-
-# You probably won't need this if you're embedding things in a tkinter plot...
-plt.ion()
+def animated_barplot():
+    x = [random.random() for _ in range(5)]
+    rects = plt.bar(range(len(x)), x, align = 'center')
+    for i in range(500):
+        x = [random.random() for _ in range(5)]
+        for rect, h in zip(rects, x):
+            rect.set_height(h)
+        fig.canvas.draw()
+        fig.canvas.flush_events()
 
 fig = plt.figure()
-ax = fig.add_subplot(111)
-line1, = ax.plot(x, y, 'r-') # Returns a tuple of line objects, thus the comma
-
-for phase in np.linspace(0, 10*np.pi, 500):
-    line1.set_ydata(np.sin(x + phase))
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+plt.show(block=False)
+animated_barplot()
