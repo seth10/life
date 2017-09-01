@@ -1,5 +1,8 @@
-import time, random
+from __future__ import division
+import random
 import multiprocessing, functools
+import matplotlib
+matplotlib.use('TKAgg')
 import matplotlib.pyplot as plot
 
 def make2DList(rows, columns, generator = lambda: False):
@@ -26,24 +29,28 @@ def simulate(size, startPercent, *args):
         history.append(iterate(history[-1]))
     iterationCount = len(history) - 1
     cycleLength = iterationCount - history[:-1].index(history[-1])
-    return any(sum(history[-1], [])) # False: eradication, True: stable
+    return iterationCount - cycleLength
 
 if __name__ == "__main__":
-    startTime = time.time()
-    POOL = multiprocessing.Pool()
-    TRIALS = 10000
-    data = []
-    for SIZE in range(5, 10):
-        #for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
-            START_PERCENT = 0.9
-            results = POOL.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
-            data.append(sum(results)/float(TRIALS))
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, data[-1]*100)
-    print "Took {:.2f} seconds.".format(time.time() - startTime)
-    plot.bar(range(len(data)), data)
+    START_PERCENT = 0.5
+    data = [0]*5
+    total = 0
+    canvas = plot.figure().canvas
+    bars = plot.bar(range(5), [1]*5)
     plot.xlabel('Grid size')
-    plot.ylabel('Fraction of simulations stabilized')
-    plot.title('Stabilization (not eradication) at 90% initial population')
+    plot.ylabel('Generations before eradication/stabilization')
+    plot.title('Grid size vs iteration counts')
     plot.xticks(range(len(data)))
     plot.gca().set_xticklabels(['{0}x{0}'.format(i) for i in range(5, 10)])
-    plot.show()
+    plot.show(block=False)
+    axis = plot.gca()
+    while True:
+        total += 1
+        for SIZE in range(5, 10):
+            data[SIZE-5] += simulate(SIZE, START_PERCENT)
+        for i, bar in enumerate(bars):
+            bar.set_height(data[i]/total)
+        axis.relim()
+        axis.autoscale_view()
+        canvas.draw()
+        canvas.flush_events()
