@@ -1,5 +1,5 @@
 from __future__ import division
-import random
+import math, random
 import multiprocessing, functools
 import matplotlib
 matplotlib.use('TKAgg')
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     data = [0]*len(START_FRACTIONS)
     total = 0
     canvas = plot.figure().canvas
-    bars = plot.bar(range(len(START_FRACTIONS)), [45]*len(START_FRACTIONS))
+    bars = plot.bar(range(len(START_FRACTIONS)), data)
     plot.xlabel('Fraction of environment initially populated')
     plot.ylabel('Generations before eradication or stabilization')
     plot.title('Initial population vs generation count')
@@ -51,5 +51,7 @@ if __name__ == "__main__":
             data[i] += simulate(GRID_SIZE, START_PERCENT)
         for i, bar in enumerate(bars):
             bar.set_height(data[i]/total)
+        hmax = max(map(lambda bar: bar.get_height(), bars))
+        axis.set_ylim([0, math.ceil(hmax/5)*5 + 2])
         canvas.draw()
         canvas.flush_events()
