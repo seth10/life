@@ -32,25 +32,24 @@ def simulate(size, startPercent, *args):
     return iterationCount - cycleLength
 
 if __name__ == "__main__":
-    START_PERCENT = 0.5
-    data = [0]*5
+    GRID_SIZE = 8
+    START_FRACTIONS = map(lambda n: n/10.0, range(0,11))
+    data = [0]*len(START_FRACTIONS)
     total = 0
     canvas = plot.figure().canvas
-    bars = plot.bar(range(5), [1]*5)
-    plot.xlabel('Grid size')
-    plot.ylabel('Generations before eradication/stabilization')
-    plot.title('Grid size vs iteration counts')
+    bars = plot.bar(range(len(START_FRACTIONS)), [45]*len(START_FRACTIONS))
+    plot.xlabel('Fraction of environment initially populated')
+    plot.ylabel('Generations before eradication or stabilization')
+    plot.title('Initial population vs generation count')
     plot.xticks(range(len(data)))
-    plot.gca().set_xticklabels(['{0}x{0}'.format(i) for i in range(5, 10)])
+    plot.gca().set_xticklabels(START_FRACTIONS)
     plot.show(block=False)
     axis = plot.gca()
     while True:
         total += 1
-        for SIZE in range(5, 10):
-            data[SIZE-5] += simulate(SIZE, START_PERCENT)
+        for i, START_PERCENT in enumerate(START_FRACTIONS):
+            data[i] += simulate(GRID_SIZE, START_PERCENT)
         for i, bar in enumerate(bars):
             bar.set_height(data[i]/total)
-        axis.relim()
-        axis.autoscale_view()
         canvas.draw()
         canvas.flush_events()
