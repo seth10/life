@@ -39,12 +39,12 @@ def iterate(today):
             #   - Each cell with three neighbors becomes populated.
     return tomorrow
 
-def simulate(history, delay=0.1):
+def step(history, delay=0.1):
     print2D(history[-1])
     statusLine("Generation {}".format(len(history)-1))
     history.append(iterate(history[-1]))
     if history[-1] not in history[:-1]:
-        root.after(int(delay*1000), partial(simulate, history, delay))
+        root.after(int(delay*1000), partial(step, history, delay))
     else:
         iterationCount = len(history) - 1
         cycleLength = iterationCount - history[:-1].index(history[-1])
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     root = Tk()
     canvas = Canvas(root, width=SIZE*BLOCK_SIZE, height=SIZE*BLOCK_SIZE+12, bg="white")
     canvas.pack()
-    root.after(10, partial(simulate, HISTORY, DELAY))
+    root.after(10, partial(step, HISTORY, DELAY))
     root.mainloop()
