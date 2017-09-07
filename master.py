@@ -49,12 +49,11 @@ if __name__ == "__main__":
     DELAY = 0.1
     MAX_ITERATIONS = 10*int(1/DELAY) # let the simulation run up to 10 seconds
     # which character to print for "alive" cells
-    #PRINT_CHAR = "O"
-    #PRINT_CHAR = unichr(0x2588).encode('utf-8') # solid block
-    #PRINT_CHAR = unichr(0x1F534).encode('utf-8') # red circle
-    #PRINT_CHAR = unichr(0x1F535).encode('utf-8') # blue circle
-    PRINT_CHAR = unichr(0x25CB).encode('utf-8') # small circle
-    #PRINT_CHAR = unichr(0x258C).encode('utf-8') # vertical half middle block (looks better in iTerm2 than Cygwin)
+    # "O": a simple option
+    # 0x2588: solid block
+    # 0x258C: vertical half middle block (looks better in iTerm2 than Cygwin)
+    # 0x25CB: small circle
+    PRINT_CHAR = unichr(0x25CB).encode('utf-8')
     try:
         locale.setlocale(locale.LC_ALL, '')
         stdscr = curses.initscr()
