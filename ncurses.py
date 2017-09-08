@@ -11,7 +11,7 @@ def make2DList(rows, columns, generator = lambda: False):
     return [[generator() for _ in range(rows)] for _ in range(columns)]
 
 def iterate(today):
-    tomorrow = make2DList(len(today), len(today[0]))
+    tomorrow = make2DList(len(today[0]), len(today))
     for i, row in enumerate(tomorrow):
         for j, element in enumerate(row):
             neighbors = sum([ today[(i+x)%len(today)][(j+y)%len(row)] for x in [-1,0,1] for y in [-1,0,1] if (x,y) != (0,0) ])
