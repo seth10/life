@@ -23,6 +23,6 @@ def simulate(size, startPercent):
 if __name__ == "__main__":
     TRIALS = 100000
     for SIZE in range(5, 10):
-        for START_PERCENT in map(lambda n: n/10.0, range(1,10)):
+        for START_PERCENT in [n/10.0 for n in range(1,10)]:
             results = [simulate(SIZE, START_PERCENT) for _ in range(TRIALS)]
             print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)/len(results)*100.0)

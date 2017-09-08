@@ -37,7 +37,7 @@ if __name__ == "__main__":
     POOL = multiprocessing.Pool()
     TRIALS = 100
     GRID_SIZES = range(5, 10)
-    POPULATION_PERCENTAGES = map(lambda n: n/10, range(0,11))
+    POPULATION_PERCENTAGES = [n/10 for n in range(0,11)]
     data = []
     for SIZE in GRID_SIZES:
         data.append([])

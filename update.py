@@ -33,7 +33,7 @@ def simulate(size, startPercent, *args):
 
 if __name__ == "__main__":
     GRID_SIZE = 8
-    START_FRACTIONS = map(lambda n: n/10.0, range(0,11))
+    POPULATION_PERCENTAGES = [n/10 for n in range(0,11)]
     data = [0]*len(START_FRACTIONS)
     total = 0
     canvas = plot.figure().canvas
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             data[i] += simulate(GRID_SIZE, START_PERCENT)
         for i, bar in enumerate(bars):
             bar.set_height(data[i]/total)
-        hmax = max(map(lambda bar: bar.get_height(), bars))
+        hmax = max([bar.get_height() for bar in bars])
         axis.set_ylim([0, math.ceil(hmax/5)*5 + 2])
         canvas.draw()
         canvas.flush_events()
