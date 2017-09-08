@@ -4,7 +4,7 @@
 
 Six years ago (September 2011), I needed a science fair topic. Having recently been introduced to and fascinated by John Conway's Game of Life, I formulated a hypothesis along the lines of "There exists an optimal initial population density to maximize generations until stabilization in John Conway's Game of Life." I decided to revisit this project now. You can read more about The Game of Life [here](http://web.stanford.edu/~cdebs/GameOfLife/), or use a simple online simulator [here](https://bitstorm.org/gameoflife/). Different branches off this idea and implementation decisions are given their own file, detailed below.
 
-## curses.py
+## ncurses.py
 This was my first implementation in the revival of this project. It runs a simulation of The Game of Life and displays each iteration on screen. The grid size is a constant which may be adjusted, as is the character which is printed for "living" cells. The time each iteration is shown before the next is specified in seconds by `DELAY`. You can also set a timeout in the form of `MAX_ITERATIONS`. This program uses the `curses` library to draw over the screen instead of printing many, many lines. Be sure your terminal is at least `SIZE`+2 lines high. When the simulation completes you may press Enter to run another, or any other key to quit.
 
 ## small.py
