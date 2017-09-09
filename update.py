@@ -33,14 +33,15 @@ def simulate(size, startPercent, *args):
 
 if __name__ == "__main__":
     GRID_SIZE = 8
-    POPULATION_PERCENTAGES = [n/10 for n in range(0,11)]
+    START_FRACTIONS = [n/10 for n in range(0,11)]
     data = [0]*len(START_FRACTIONS)
     total = 0
     canvas = plot.figure().canvas
-    bars = plot.bar(range(len(START_FRACTIONS)), data)
+    bars = plot.bar(range(len(START_FRACTIONS)), data, label='5x5 grid')
     plot.xlabel('Fraction of environment initially populated')
     plot.ylabel('Generations before eradication or stabilization')
     plot.title('Initial population vs generation count')
+    plot.legend()
     plot.xticks(range(len(data)))
     plot.gca().set_xticklabels(START_FRACTIONS)
     plot.show(block=False)
