@@ -16,7 +16,7 @@ This program focuses on the question of "Do any simulations actually survive at 
 
 ## science.py
 <img alt="A 3D bar graph titled: Initial cell population and grid size vs stabilization/eradication" src="https://user-images.githubusercontent.com/5026621/30225638-2edad066-94a1-11e7-9031-f80e79f66d8f.png" width="100%">
-I wrote this program really because I was thinking of ways to visualize data related to this project and just wanted to make a 3D bar chart, becuase it looks cool 😎. 
+I wrote this program really because I was thinking of ways to visualize data related to this project and just wanted to make a 3D bar chart, becuase it looks cool.
 
 I later forced the bases of each bar to be square.
 <img alt="A 3D bar graph titled: Initial cell population and grid size vs stabilization/eradication" src="https://user-images.githubusercontent.com/5026621/30225661-41777c38-94a1-11e7-86ed-390d5080580c.png" width="100%">
