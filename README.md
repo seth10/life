@@ -15,11 +15,8 @@ This is a trimmed down version of the above. It cuts out all of the UI code (bes
 This program focuses on the question of "Do any simulations actually survive at 90% [initial population density]?" Looking at the previous programs I almost always saw a 0% survival at 90% of cells initially populated. (Note 100% is a trivial case as all cells will die of overcrowding in one generation.) This program will run through simulations at grid sizes 5x5 by 9x9 with a 90% starting percentage of cells alive. Once it completes running ten-thousand trials at each grid size, it uses matplotlib to display a bar chart with the percentage of simulations that survived on each grid size. It took about twenty seconds to run the fifty-thousand simulations on my computer.
 
 ## science.py
-<img alt="A 3D bar graph titled: Initial cell population and grid size vs stabilization/eradication" src="https://user-images.githubusercontent.com/5026621/30225638-2edad066-94a1-11e7-9031-f80e79f66d8f.png" width="100%">
-I wrote this program really because I was thinking of ways to visualize data related to this project and just wanted to make a 3D bar chart, becuase it looks cool.
-
-I later forced the bases of each bar to be square.
-<img alt="A 3D bar graph titled: Initial cell population and grid size vs stabilization/eradication" src="https://user-images.githubusercontent.com/5026621/30225661-41777c38-94a1-11e7-86ed-390d5080580c.png" width="100%">
+<img alt="A 3D bar graph titled: Initial cell population and grid size vs generations until stabilization" src="https://user-images.githubusercontent.com/5026621/30236053-bb1ecdbe-94df-11e7-9c5a-9085b8ecac72.png" width="100%">
+I wrote this program really because I was thinking of ways to visualize data related to this project and just wanted to make a 3D bar chart, because it looks cool.
 
 ## tkinter.py
 I was having some trouble with matplotlib on Windows; so, knowing Tk is cross-platform, I wanted to use the `tkinter` module included in Python to visualize the simulations.
