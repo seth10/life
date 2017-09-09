@@ -30,13 +30,13 @@ def simulate(size, startPercent, *args):
         history.append(iterate(history[-1]))
     iterationCount = len(history) - 1
     cycleLength = iterationCount - history[:-1].index(history[-1])
-    return any(sum(history[-1], [])) # False: eradication, True: stable
+    return iterationCount - cycleLength
 
 if __name__ == "__main__":
     startTime = time.time()
     POOL = multiprocessing.Pool()
     TRIALS = 100
-    GRID_SIZES = range(5, 10)
+    GRID_SIZES = range(5, 11)
     POPULATION_PERCENTAGES = [n/10 for n in range(0,11)]
     data = []
     for SIZE in GRID_SIZES:
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         for START_PERCENT in POPULATION_PERCENTAGES:
             results = POOL.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
             data[-1].append(sum(results)/TRIALS)
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, data[-1][-1]*100)
+            print "{0}x{0} grid with {1:.0f}% initially alive: average {2:.0f} generations".format(SIZE, START_PERCENT*100, round(data[-1][-1]))
 
     print "Took {:.2f} seconds.".format(time.time() - startTime)
 
@@ -65,15 +65,15 @@ if __name__ == "__main__":
     ax.w_yaxis.set_ticks([i+dy/2 for i in range(len(data))])
     ax.w_yaxis.set_ticklabels(['{0}x{0}'.format(i) for i in GRID_SIZES])
 
-    ax.set_title('Initial cell population and grid size vs stabilization/eradication')
+    ax.set_title('Initial cell population and grid size vs generations until stabilization')
     ax.set_xlabel('Fraction of cells initially alive')
     ax.set_ylabel('Grid size')
-    ax.set_zlabel('Fraction of simulations stabilized')
+    ax.set_zlabel('Average number of generations')
 
     # stretch axis, thanks to stackoverflow.com/q/30223161
     ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, len(data)/len(data[0]), 1, 1]))
 
-    colors = cm.rainbow( [0.2 + (1-0.2)/(len(x)-1)*i for i in range(len(x))] )
+    colors = cm.rainbow([i/len(x) for i in range(len(x))])
     ax.bar3d(x, y, z, dx, dy, dz, colors)
     plt.tight_layout()
     plt.show()
