@@ -36,7 +36,7 @@ if __name__ == "__main__":
     startTime = time.time()
     POOL = multiprocessing.Pool()
     TRIALS = 100
-    GRID_SIZES = range(5, 11)
+    GRID_SIZES = range(4, 11)
     POPULATION_PERCENTAGES = [n/10 for n in range(0,11)]
     data = []
     for SIZE in GRID_SIZES:
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # stretch axis, thanks to stackoverflow.com/q/30223161
     ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, len(data)/len(data[0]), 1, 1]))
 
-    colors = cm.rainbow([i/len(x) for i in range(len(x))])
+    colors = cm.rainbow( [0.2 + (1-0.2)/(len(x)-1)*i for i in range(len(x))] )
     ax.bar3d(x, y, z, dx, dy, dz, colors)
     plt.tight_layout()
     plt.show()
