@@ -19,7 +19,9 @@ This program focuses on the question of "Do any simulations actually survive at 
 I wrote this program really because I was thinking of ways to visualize data related to this project and just wanted to make a 3D bar chart, because it looks cool.
 
 ## tkinter.py
+<img alt="A window using Tk to render an animation of The Game of Life" src="https://user-images.githubusercontent.com/5026621/30236283-38655032-94e4-11e7-9c11-163bfd85cf9c.gif" width="40%"><img alt="A dialog box stating: Stable after 102 generations with a cycle of length 1" src="https://user-images.githubusercontent.com/5026621/30236287-4c126656-94e4-11e7-85d1-9a3884ab4d5e.png" width="60%">
 I was having some trouble with matplotlib on Windows; so, knowing Tk is cross-platform, I wanted to use the `tkinter` module included in Python to visualize the simulations.
 
 ## update.py
+<img alt="A live-updating 2D bar graph titled: Initial population vs generation count" src="https://user-images.githubusercontent.com/5026621/30242311-03b56aa6-9562-11e7-8bef-2f6650cbaf05.gif" width="100%">
 The aim of the program is to continually run more simulations and collect more data to move the bars to more accurate positions.
