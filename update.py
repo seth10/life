@@ -32,27 +32,31 @@ def simulate(size, startPercent, *args):
     return iterationCount - cycleLength
 
 if __name__ == "__main__":
-    GRID_SIZE = 8
+    GRID_SIZES = range(5,9)
     START_FRACTIONS = [n/10 for n in range(0,11)]
-    data = [0]*len(START_FRACTIONS)
+    data = [[0 for _ in START_FRACTIONS] for _ in GRID_SIZES]
     total = 0
     canvas = plot.figure().canvas
-    bars = plot.bar(range(len(START_FRACTIONS)), data, label='5x5 grid')
+    SPACING = 1/(len(GRID_SIZES)+2)
+    bars = [plot.bar([j-1+i*SPACING for j in range(len(START_FRACTIONS))], data[i], width=SPACING, label='{0}x{0} grid'.format(GRID_SIZE)) \
+            for i, GRID_SIZE in enumerate(GRID_SIZES)]
     plot.xlabel('Fraction of environment initially populated')
     plot.ylabel('Generations before eradication or stabilization')
     plot.title('Initial population vs generation count')
     plot.legend()
-    plot.xticks(range(len(data)))
+    plot.xticks([j-1+(i-(len(GRID_SIZES)/2-0.5))*SPACING for j in range(len(START_FRACTIONS))])
     plot.gca().set_xticklabels(START_FRACTIONS)
     plot.show(block=False)
     axis = plot.gca()
     while True:
         total += 1
-        for i, START_PERCENT in enumerate(START_FRACTIONS):
-            data[i] += simulate(GRID_SIZE, START_PERCENT)
-        for i, bar in enumerate(bars):
-            bar.set_height(data[i]/total)
-        hmax = max([bar.get_height() for bar in bars])
+        for i, gridSize in enumerate(GRID_SIZES):
+            for j, startPercent in enumerate(START_FRACTIONS):
+                data[i][j] += simulate(gridSize, startPercent)
+        for i in range(len(data)):
+            for j, bar in enumerate(bars[i]):
+                bar.set_height(data[i][j]/total)
+        hmax = max([bar.get_height() for bar in bars[i] for i in range(len(bars))])
         axis.set_ylim([0, math.ceil(hmax/5)*5 + 2])
         canvas.draw()
         canvas.flush_events()
