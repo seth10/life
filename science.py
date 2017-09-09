@@ -44,7 +44,7 @@ if __name__ == "__main__":
         for START_PERCENT in POPULATION_PERCENTAGES:
             results = POOL.map(functools.partial(simulate, SIZE, START_PERCENT), range(TRIALS))
             data[-1].append(sum(results)/TRIALS)
-            print "{0}x{0} grid with {1:.0f}% initially alive: average {2:.0f} generations".format(SIZE, START_PERCENT*100, round(data[-1][-1]))
+            print "{0}x{0} grid with {1:3.0f}% initially alive: average {2:2.0f} generations".format(SIZE, START_PERCENT*100, round(data[-1][-1]))
 
     print "Took {:.2f} seconds.".format(time.time() - startTime)
 

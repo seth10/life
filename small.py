@@ -18,11 +18,11 @@ def simulate(size, startPercent):
         history.append(iterate(history[-1]))
     iterationCount = len(history) - 1
     cycleLength = iterationCount - history[:-1].index(history[-1])
-    return any(sum(history[-1], [])) # False: eradication, True: stable
+    return iterationCount - cycleLength
 
 if __name__ == "__main__":
-    TRIALS = 100000
+    TRIALS = 1000
     for SIZE in range(5, 10):
-        for START_PERCENT in [n/10.0 for n in range(1,10)]:
+        for START_PERCENT in [n/10.0 for n in range(0,11)]:
             results = [simulate(SIZE, START_PERCENT) for _ in range(TRIALS)]
-            print "{0}x{0} grid with {1:.0f}% initially alive: {2}% stable".format(SIZE, START_PERCENT*100, sum(results)/len(results)*100.0)
+            print "{0}x{0} grid with {1:3.0f}% initially alive: average {2:2.0f} generations".format(SIZE, START_PERCENT*100, round(sum(results)/len(results)))
